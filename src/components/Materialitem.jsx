@@ -8,7 +8,7 @@ const MaterialItem = ({ material }) => {
       <ListItemIcon>
         <DescriptionIcon />
       </ListItemIcon>
-      <ListItemText primary={material.name} />
+      <ListItemText primary={material.title || material.name} />
     </ListItem>
   );
 };

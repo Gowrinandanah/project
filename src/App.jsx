@@ -11,6 +11,12 @@ import Creategroup from './components/Creategroup';
 import Userprofile from './components/Userprofile';
 import Admin from './components/Admin';
 
+if (process.env.NODE_ENV === "development") {
+  localStorage.clear(); // remove before deployment
+}
+
+
+
 const App = () => {
   return (
     <Router>

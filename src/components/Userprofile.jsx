@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, Paper, List, ListItem, ListItemText } from '@mui/material';
-import axios from 'axios';
+import { getUserProfile } from '../api/UserApi';
 
 const UserProfilePage = () => {
   const [user, setUser] = useState({});
@@ -8,34 +8,25 @@ const UserProfilePage = () => {
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
-    /*const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token');
 
-    axios.get('http://localhost:5000/api/user/profile', {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(res => {
+    if (!token) {
+      console.error('No token found. Redirect to login maybe.');
+      return;
+    }
+
+    const fetchProfile = async () => {
+      try {
+        const res = await getUserProfile(token);
         setUser(res.data.user);
         setGroups(res.data.groups);
         setMessages(res.data.messages);
-      })
-      .catch(err => {
+      } catch (err) {
         console.error('Failed to load profile data', err);
-      });*/
+      }
+    };
 
-     setUser({
-      name: 'John Doe',
-      email: 'john@example.com',
-    });
-
-    setGroups([
-      { id: 1, title: 'React Learners' },
-      { id: 2, title: 'AI Club' },
-    ]);
-
-    setMessages([
-      { id: 1, content: 'Excited to be part of this group!' },
-      { id: 2, content: 'Can someone help with useEffect?' },
-    ]); 
+    fetchProfile();
   }, []);
 
   return (

@@ -1,26 +1,38 @@
-import React, { useState } from 'react';
-import { Button, TextField, Typography, Container, Box, Paper } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Button, TextField, Typography, Container, Box, Paper, Alert } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { loginUser } from '../api/UserApi';
 
 const Login = () => {
   const [form, setForm] = useState({ email: '', password: '' });
+  const [error, setError] = useState('');
   const navigate = useNavigate();
+
+  // 🔁 Clear session on mount to avoid redirecting into logged-in pages
+  useEffect(() => {
+    localStorage.clear();
+  }, []);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (form.email === "admin@gmail.com" && form.password === "admin123") {
-      localStorage.setItem("token", "adminToken");
-      localStorage.setItem("role", "admin");
-      navigate("/admin");
-    } else {
-      localStorage.setItem("token", "userToken");
-      localStorage.setItem("role", "user");
-      navigate("/");
+    try {
+      const res = await loginUser(form, true); // `true` for dummy mode
+
+      if (res.token && res.role) {
+        localStorage.setItem('token', res.token);
+        localStorage.setItem('role', res.role);
+        navigate(res.role === 'admin' ? '/admin' : '/');
+      } else {
+        setError('Invalid credentials');
+      }
+    } catch (err) {
+      console.error('Login failed', err);
+      setError('Something went wrong. Try again.');
     }
   };
 
@@ -30,6 +42,9 @@ const Login = () => {
         <Typography variant="h5" gutterBottom align="center">
           Login
         </Typography>
+
+        {error && <Alert severity="error">{error}</Alert>}
+
         <form onSubmit={handleSubmit}>
           <TextField
             label="Email"

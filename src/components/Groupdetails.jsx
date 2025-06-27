@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-// import axios from 'axios'; 
+import { fetchGroupById } from '../api/GroupApi'; // ✅ API call
 import MessageBox from './Messagebox';
 import MaterialItem from './Materialitem';
 
@@ -11,27 +11,22 @@ const Groupdetails = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+
     if (!token) {
       navigate("/login");
       return;
     }
 
-    // Dummy data for now
-    const dummyGroup = {
-      _id: id,
-      title: 'React Learners',
-      subject: 'Web Development',
-      description: 'A group for React.js enthusiasts.',
-      members: ['Alice', 'Bob'],
-      messages: [{ text: 'Welcome!', user: 'Alice' }],
-      materials: [{ title: 'Intro to React' }]
+    const fetchGroup = async () => {
+      try {
+        const data = await fetchGroupById(id, true); // 👈 switch to false when using backend
+        setGroup(data);
+      } catch (err) {
+        console.error("Failed to fetch group details", err);
+      }
     };
 
-    setGroup(dummyGroup);
-
-    // axios.get(`http://localhost:5000/api/group/${id}`)
-    //   .then(res => setGroup(res.data))
-    //   .catch(err => console.log(err));
+    fetchGroup();
   }, [id, navigate]);
 
   if (!group) return <div>Loading...</div>;

@@ -1,6 +1,16 @@
 import React, { useState } from 'react';
-import { Button, TextField, Typography, Container, Paper, Checkbox, FormControlLabel, Box } from '@mui/material';
+import {
+  Button,
+  TextField,
+  Typography,
+  Container,
+  Paper,
+  Checkbox,
+  FormControlLabel,
+  Box,
+} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { registerUser } from '../api/UserApi';
 
 const Signup = () => {
   const [form, setForm] = useState({
@@ -8,31 +18,33 @@ const Signup = () => {
     email: '',
     contact: '',
     password: '',
-    terms: false
+    terms: false,
   });
 
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setForm({ ...form, [name]: type === 'checkbox' ? checked : value });
+    setForm((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!form.terms) {
-      alert("Please accept the terms and conditions");
+      alert('Please accept the terms and conditions');
       return;
     }
 
-    // Placeholder for backend logic
-    console.log("Registration Data:", form);
-
-    // Save dummy token and role (until backend is connected)
-    localStorage.setItem("token", "userToken");
-    localStorage.setItem("role", "user");
-    navigate("/");
+    try {
+      const res = await registerUser(form);
+      localStorage.setItem('token', res.data.token);
+      localStorage.setItem('role', res.data.role);
+      navigate('/');
+    } catch (err) {
+      alert('Registration failed. Please try again.');
+      console.error(err);
+    }
   };
 
   return (
