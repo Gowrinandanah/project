@@ -68,11 +68,39 @@ export const fetchAllGroups = async () => {
       },
       {
          _id: '4',
-         title: 'Python Developers',
+         title: 'Python ',
          subject: 'Programming',
          description: 'Helping newcomers get started with Python.',
          status: 'pending'
-      }
+      },
+      {
+        _id: '5',
+        title: 'Coding Club',
+        subject: 'Artificial Intelligence',
+        description: 'Discuss AI topics.',
+        status: 'approved'
+      },
+      {
+        _id: '6',
+        title: 'C++ Club',
+        subject: 'Artificial Intelligence',
+        description: 'Discuss AI topics.',
+        status: 'approved'
+      },
+      {
+        _id: '7',
+        title: 'java Club',
+        subject: 'Artificial Intelligence',
+        description: 'Discuss AI topics.',
+        status: 'approved'
+      },
+      {
+        _id: '8',
+        title: 'Robotics Club',
+        subject: 'Artificial Intelligence',
+        description: 'Discuss AI topics.',
+        status: 'approved'
+      },
     ];
   } else {
     const res = await axios.get('/groups');

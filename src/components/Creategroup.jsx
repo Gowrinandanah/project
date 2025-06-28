@@ -1,15 +1,9 @@
 import React, { useState } from 'react';
 import {
-  Container,
-  Typography,
-  TextField,
-  Button,
-  Box,
-  Paper,
-  Alert
+  Container, Typography, TextField, Button, Box, Paper, Alert
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { createGroup } from '../api/GroupApi'; // 👈 Imported from GroupApi
+import { createGroup } from '../api/GroupApi';
 
 const CreateGroupPage = () => {
   const navigate = useNavigate();
@@ -23,7 +17,7 @@ const CreateGroupPage = () => {
   const [error, setError] = useState('');
 
   const handleChange = (e) => {
-    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
@@ -32,24 +26,25 @@ const CreateGroupPage = () => {
 
     if (!token) {
       setError('You must be logged in to create a group.');
+      
       return;
     }
 
     try {
-      await createGroup(form, token); // ✅ using centralized API function
+      await createGroup(form, token);
       setSuccess(true);
       setError('');
       setForm({ title: '', subject: '', description: '' });
       setTimeout(() => navigate('/'), 1500);
-    } catch (err) {
+    } catch {
       setError('Failed to create group. Try again.');
     }
   };
 
   return (
     <Container maxWidth="sm">
-      <Paper elevation={3} sx={{ padding: 4, marginTop: 4 }}>
-        <Typography variant="h5" gutterBottom align="center">
+      <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
+        <Typography variant="h5" align="center" gutterBottom>
           Create New Study Group
         </Typography>
 
@@ -65,6 +60,7 @@ const CreateGroupPage = () => {
             fullWidth
             required
             margin="normal"
+            aria-label="Group Title"
           />
           <TextField
             label="Subject"
@@ -74,6 +70,7 @@ const CreateGroupPage = () => {
             fullWidth
             required
             margin="normal"
+            aria-label="Group Subject"
           />
           <TextField
             label="Description"
@@ -85,8 +82,8 @@ const CreateGroupPage = () => {
             multiline
             rows={4}
             margin="normal"
+            aria-label="Group Description"
           />
-
           <Box mt={2}>
             <Button type="submit" variant="contained" fullWidth>
               Submit for Approval

@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { Button, TextField, Typography, Container, Box, Paper, Alert } from '@mui/material';
+import React, { useState,useEffect } from 'react';
+import {Button,TextField,Typography,Container,Box,Paper,Alert} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../api/UserApi';
+
+
+
 
 const Login = () => {
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  // 🔁 Clear session on mount to avoid redirecting into logged-in pages
+   //  Clear session on mount to avoid redirecting into logged-in pages
   useEffect(() => {
     localStorage.clear();
   }, []);
@@ -19,9 +22,10 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
 
     try {
-      const res = await loginUser(form, true); // `true` for dummy mode
+      const res = await loginUser(form); // No dummy mode here
 
       if (res.token && res.role) {
         localStorage.setItem('token', res.token);
@@ -31,8 +35,8 @@ const Login = () => {
         setError('Invalid credentials');
       }
     } catch (err) {
-      console.error('Login failed', err);
-      setError('Something went wrong. Try again.');
+      console.error('Login failed:', err);
+      setError('Something went wrong. Please try again.');
     }
   };
 

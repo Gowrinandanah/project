@@ -1,9 +1,7 @@
-
-
+// src/api/UserApi.js
 import axios from './Axios';
 
-// Toggle this to switch between dummy and backend
-const useDummy = true;
+const useDummy = true; // Toggle mock vs real backend
 
 /* 1. Login */
 export const loginUser = async (form) => {
@@ -13,10 +11,9 @@ export const loginUser = async (form) => {
     } else {
       return { role: "user", token: "userToken" };
     }
-  } else {
-    const res = await axios.post('/login', form);
-    return res.data; // { token, role }
   }
+  const res = await axios.post('/login', form);
+  return res.data;
 };
 
 /* 2. Register */
@@ -24,10 +21,9 @@ export const registerUser = async (formData) => {
   if (useDummy) {
     console.log('Simulated registration:', formData);
     return { data: { token: 'userToken', role: 'user' } };
-  } else {
-    const res = await axios.post('/users/register', formData);
-    return res.data;
   }
+  const res = await axios.post('/users/register', formData);
+  return res.data;
 };
 
 /* 3. Get User Profile */
@@ -38,6 +34,7 @@ export const getUserProfile = async (token) => {
         user: {
           name: 'John Doe',
           email: 'john@example.com',
+          profilePicture: ''
         },
         groups: [
           { _id: 1, title: 'React Learners' },
@@ -49,15 +46,55 @@ export const getUserProfile = async (token) => {
         ]
       }
     };
+  }
+
+  const res = await axios.get('/user/profile', {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  return res.data;
+};
+
+/* 4. Upload Profile Picture (Base64) */
+export const updateProfilePic = async (imageBase64) => {
+  const token = localStorage.getItem('token');
+
+  if (useDummy) {
+    console.log('Simulated profile picture upload');
+    return { data: { success: true } };
+  }
+
+  const res = await axios.post(
+    '/user/profile-pic',
+    { image: imageBase64 },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return res.data;
+};
+
+
+/* Update User Info */
+export const updateUserInfo = async (newData, token) => {
+  if (useDummy) {
+    console.log('Mock update user info:', newData);
+    return { data: { success: true } };
   } else {
-    const res = await axios.get('/user/profile', {
-      headers: { Authorization: `Bearer ${token}` }
-    });
+    const res = await axios.put(
+      '/user/update',
+      newData,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
     return res.data;
   }
 };
 
-/* 4. Fetch All Users (Admin Only) */
+
+
+
+/* 5. Fetch All Users (Admin Only) */
 export const fetchAllUsers = async () => {
   if (useDummy) {
     return [
@@ -65,46 +102,14 @@ export const fetchAllUsers = async () => {
       { _id: '2', name: 'Bobby', email: 'bobby@example.com' },
       { _id: '3', name: 'Amelia', email: 'ame@example.com' },
       { _id: '4', name: 'Raj', email: 'raj@example.com' }
-
     ];
-  } else {
-    const res = await axios.get('/admin/users');
-    return res.data;
   }
-};
 
-
-//deleteuser
-
-export const suspendUser = async (id) => {
-  return await axios.put(`/users/${id}/suspend`); 
-};
-
-
-
-/*
-// src/api/UserApi.js
-import axios from './Axios'; // Make sure Axios.js has your base URL setup
-
-// Real login
-export const loginUser = async (form) => {
-  const res = await axios.post('/login', form);
-  return res.data; // Should return { token, role }
-};
-
-// Real registration
-export const registerUser = async (formData) => {
-  const res = await axios.post('/users/register', formData);
-  return res.data; // Should return { token, role }
-};
-
-// Real user profile fetch
-export const getUserProfile = async (token) => {
-  const res = await axios.get('/user/profile', {
-    headers: { Authorization: `Bearer ${token}` }
-  });
+  const res = await axios.get('/admin/users');
   return res.data;
 };
 
-
-*/
+/* 6. Suspend User */
+export const suspendUser = async (id) => {
+  return await axios.put(`/users/${id}/suspend`);
+};

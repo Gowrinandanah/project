@@ -96,7 +96,7 @@ const Admin = () => {
         </Typography>
         <Divider sx={{ mb: 2 }} />
 
-        {/* 🔍 Search Input */}
+        {/*  Search Input */}
         <TextField
           label="Search by name"
           variant="outlined"

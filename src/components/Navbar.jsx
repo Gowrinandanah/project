@@ -13,7 +13,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     localStorage.clear();
-    navigate("/login");
+    navigate("/");
   };
 
   const isActive = (path) => location.pathname === path;
@@ -22,13 +22,19 @@ const Navbar = () => {
     <AppBar position="static">
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Typography
-          variant="h6"
+          variant="h3"
           component={Link}
           to="/"
-          sx={{ textDecoration: 'none', color: '#fff' }}
+          sx={{
+          textDecoration: 'none',
+          color: '#fff',
+          fontFamily: '"Pacifico", cursive',
+          outline: 'none',
+          }}
         >
-          StudyGroupFinder
-        </Typography>
+           brainhive
+       </Typography>
+
 
         <Box>
           <Button
